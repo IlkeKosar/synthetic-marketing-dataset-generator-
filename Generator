@@ -1,0 +1,44 @@
+import pandas as pd
+import numpy as np
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+# Create weekly dates from 2020 to 2023
+weeks = pd.date_range(start="2020-01-05", end="2023-12-31", freq="W")
+n = len(weeks)
+
+# Generate synthetic spend data
+data = pd.DataFrame({
+    'week': weeks,
+    'tv_spend': np.random.gamma(5, 2000, n),
+    'radio_spend': np.random.gamma(3, 800, n),
+    'paid_search_spend': np.random.gamma(4, 1200, n),
+    'paid_social_spend': np.random.gamma(2, 1500, n),
+    'display_spend': np.random.gamma(3, 600, n),
+    'direct_traffic': np.random.gamma(2, 1000, n),
+    'out_of_home_spend': np.random.gamma(2, 1100, n),
+})
+
+# Calculate synthetic sales based on media contribution
+data['sales'] = (
+    50000 +
+    0.06 * data['tv_spend'] +
+    0.05 * data['radio_spend'] +
+    0.08 * data['paid_search_spend'] +
+    0.07 * data['paid_social_spend'] +
+    0.03 * data['display_spend'] +
+    0.10 * data['direct_traffic'] +
+    0.04 * data['out_of_home_spend'] +
+    np.random.normal(0, 5000, n)  # Add some noise
+)
+
+# Add region and campaign type
+data['region'] = np.random.choice(['North', 'South', 'East', 'West'], size=n)
+data['campaign_type'] = np.random.choice(['Brand', 'Performance'], size=n)
+
+# Save to CSV
+csv_path = "/mnt/data/synthetic_marketing_data.csv"
+data.to_csv(csv_path, index=False)
+
+csv_path
